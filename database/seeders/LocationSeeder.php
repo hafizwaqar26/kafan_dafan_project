@@ -45,12 +45,17 @@ class LocationSeeder extends Seeder
         return;
     }
 
+    // Remove UTF-8 BOM from the first column if it exists
+    if (isset($header[0])) {
+        $header[0] = preg_replace('/^[\xef\xbb\xbf]+/', '', $header[0]);
+    }
+
     $rows = [];
     while (($data = fgetcsv($handle)) !== false) {
         $row = array_combine($header, $data);
 
         // Basic validation
-        if (!isset($row['id'], $row['name'])) {
+        if (empty($row['id']) || empty($row['name'])) {
             continue;
         }
 
