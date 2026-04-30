@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GhassalRecordsExport;
 use Spatie\Browsershot\Browsershot;
+use Illuminate\Support\Facades\DB;
 
 class GhassalRecordController extends Controller
 {
@@ -91,7 +92,8 @@ class GhassalRecordController extends Controller
      */
     public function create()
     {
-        return view('ghassal.create');
+        $countries = DB::table('countries')->get();
+        return view('ghassal.create', compact('countries'));
     }
 
     /**
@@ -100,18 +102,27 @@ class GhassalRecordController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'country'        => 'required|string|max:255',
-            'province'       => 'required|string|max:255',
-            'division'       => 'required|string|max:255',
-            'district'       => 'required|string|max:255',
-            'tehsil'         => 'required|string|max:255',
-            'sub_tehsil'     => 'required|string|max:255',
-            'uc'             => 'required|string|max:255',
+            'country'        => 'required',
+            'province'       => 'required',
+            'division'       => 'required',
+            'district'       => 'required',
+            'tehsil'         => 'required',
+            'sub_tehsil'     => 'required',
+            'uc'             => 'required',
             'address'        => 'required|string|max:255',
             'name'           => 'required|string|max:255',
             'contact'        => 'required|string|max:255|unique:ghassal_records,contact',
             'time_of_ghusal' => 'required|string|max:20',
         ]);
+
+        // If ID was sent in 'country', but we have 'country_name' hidden field, use that.
+        $data['country']    = $request->country_name ?? $request->country;
+        $data['province']   = $request->province_name ?? $request->province;
+        $data['division']   = $request->division_name ?? $request->division;
+        $data['district']   = $request->district_name ?? $request->district;
+        $data['tehsil']     = $request->tehsil_name ?? $request->tehsil;
+        $data['sub_tehsil'] = $request->sub_tehsil_name ?? $request->sub_tehsil;
+        $data['uc']         = $request->uc_name ?? $request->uc;
 
         GhassalRecord::create($data);
 
@@ -132,22 +143,32 @@ class GhassalRecordController extends Controller
      */
     public function edit(GhassalRecord $ghassal)
     {
-        return view('ghassal.edit', compact('ghassal'));
+        $countries = DB::table('countries')->get();
+
+        // Resolve current IDs for pre-selecting in dropdowns
+        $ghassal->country_id    = DB::table('countries')->where('name', $ghassal->country)->value('id');
+        $ghassal->province_id   = DB::table('provinces')->where('name', $ghassal->province)->value('id');
+        $ghassal->division_id   = DB::table('divisions')->where('name', $ghassal->division)->value('id');
+        $ghassal->district_id   = DB::table('districts')->where('name', $ghassal->district)->value('id');
+        $ghassal->tehsil_id     = DB::table('tehsils')->where('name', $ghassal->tehsil)->value('id');
+        $ghassal->sub_tehsil_id = DB::table('sub_tehsils')->where('name', $ghassal->sub_tehsil)->value('id');
+        $ghassal->uc_id         = DB::table('union_councils')->where('name', $ghassal->uc)->value('id');
+
+        return view('ghassal.edit', compact('ghassal', 'countries'));
     }
 
     /**
-     * Update the specified resource in storage.
      */
     public function update(Request $request, GhassalRecord $ghassal)
     {
         $data = $request->validate([
-            'country'        => 'required|string|max:255',
-            'province'       => 'required|string|max:255',
-            'division'       => 'required|string|max:255',
-            'district'       => 'required|string|max:255',
-            'tehsil'         => 'required|string|max:255',
-            'sub_tehsil'     => 'required|string|max:255',
-            'uc'             => 'required|string|max:255',
+            'country'        => 'required',
+            'province'       => 'required',
+            'division'       => 'required',
+            'district'       => 'required',
+            'tehsil'         => 'required',
+            'sub_tehsil'     => 'required',
+            'uc'             => 'required',
             'address'        => 'required|string|max:255',
             'name'           => 'required|string|max:255',
             'contact'        => [
@@ -158,6 +179,14 @@ class GhassalRecordController extends Controller
             ],
             'time_of_ghusal' => 'required|string|max:20',
         ]);
+
+        $data['country']    = $request->country_name ?? $request->country;
+        $data['province']   = $request->province_name ?? $request->province;
+        $data['division']   = $request->division_name ?? $request->division;
+        $data['district']   = $request->district_name ?? $request->district;
+        $data['tehsil']     = $request->tehsil_name ?? $request->tehsil;
+        $data['sub_tehsil'] = $request->sub_tehsil_name ?? $request->sub_tehsil;
+        $data['uc']         = $request->uc_name ?? $request->uc;
 
         $ghassal->update($data);
 
@@ -198,7 +227,7 @@ class GhassalRecordController extends Controller
         $query   = $this->buildFilteredQuery($request);
         $records = $query->get();
 
-        $html = view('ghassal.pdf', compact('records'))->render();
+        $html = view('ghassal.exports.pdf', compact('records'))->render();
 
         $path = storage_path('app/ghassal_records.pdf');
 
@@ -210,5 +239,35 @@ class GhassalRecordController extends Controller
 
         return response()->download($path, 'ghassal_records_' . now()->format('Y_m_d_H_i_s') . '.pdf')
             ->deleteFileAfterSend(true);
+    }
+
+    public function getProvinces($countryId)
+    {
+        return response()->json(DB::table('provinces')->where('parent_id', $countryId)->get());
+    }
+
+    public function getDivisions($provinceId)
+    {
+        return response()->json(DB::table('divisions')->where('parent_id', $provinceId)->get());
+    }
+
+    public function getDistricts($divisionId)
+    {
+        return response()->json(DB::table('districts')->where('parent_id', $divisionId)->get());
+    }
+
+    public function getTehsils($districtId)
+    {
+        return response()->json(DB::table('tehsils')->where('parent_id', $districtId)->get());
+    }
+
+    public function getSubTehsils($tehsilId)
+    {
+        return response()->json(DB::table('sub_tehsils')->where('parent_id', $tehsilId)->get());
+    }
+
+    public function getUcs($subTehsilId)
+    {
+        return response()->json(DB::table('union_councils')->where('parent_id', $subTehsilId)->get());
     }
 }

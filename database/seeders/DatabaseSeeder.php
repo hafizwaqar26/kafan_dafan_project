@@ -14,7 +14,15 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-{
-    $this->call(LocationSeeder::class);
-}
+    {
+        $this->call(LocationSeeder::class);
+
+        User::updateOrCreate(
+            ['email' => 'admin@dawateislami.org'],
+            [
+                'name' => 'Admin',
+                'password' => \Hash::make('123456'),
+            ]
+        );
+    }
 }

@@ -15,33 +15,53 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
 
         th, td {
-            border: 1px solid #888;
-            padding: 4px 6px;
+            border: 0.5pt solid #ccc;
+            padding: 6px 4px;
             text-align: right;
-            vertical-align: middle;
+            font-size: 9px;
+            word-wrap: break-word;
         }
 
         th {
-            background: #f3f4f6;
+            background-color: #f2f2f2;
+            color: #333;
             font-weight: bold;
+            text-align: center;
         }
 
-        h3 {
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        .header-title {
             text-align: center;
-            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #1a202c;
+        }
+
+        .header-subtitle {
+            text-align: center;
+            font-size: 10px;
+            color: #718096;
+            margin-bottom: 15px;
         }
 
         .col-index {
             text-align: center;
-            width: 25px;
+            width: 20px;
+            background-color: #f7fafc;
         }
     </style>
 </head>
 <body>
-<h3>غسال ریکارڈز</h3>
+<div class="header-title">غسال ریکارڈز (Ghassal Records)</div>
+<div class="header-subtitle">Generated on: {{ now()->format('d M, Y h:i A') }}</div>
 
 <table>
     <thead>

@@ -75,4 +75,4 @@ class LocationSeeder extends Seeder
             $this->command->warn("No data rows in {$path}");
         }
     }
-}
+}}

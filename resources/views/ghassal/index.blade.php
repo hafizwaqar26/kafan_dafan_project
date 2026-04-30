@@ -17,9 +17,12 @@
             <div class="relative inline-block text-left">
                 <button type="button"
                         onclick="document.getElementById('download-menu').classList.toggle('hidden')"
-                        class="inline-flex items-center gap-1 bg-gray-700 hover:bg-gray-800 text-white px-3 py-2 rounded text-xs">
-                    Download
-                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        class="inline-flex items-center gap-2 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded text-xs shadow-sm transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M16 9l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    <span>Download</span>
+                    <svg class="w-3 h-3 ml-1" xmlns="http://www.w3.org/2000/svg" fill="none"
                          viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M19 9l-7 7-7-7"/>
@@ -27,22 +30,24 @@
                 </button>
 
                 <div id="download-menu"
-                     class="hidden absolute right-0 mt-1 w-32 bg-white border border-gray-200 rounded shadow-md z-20">
-                    <a href="{{ route('ghassal.export.csv', request()->query()) }}"
-                       class="block px-3 py-2 text-xs text-gray-700 hover:bg-gray-100">
-                        CSV
+                     class="hidden absolute right-0 mt-1 w-32 bg-white border border-gray-200 rounded shadow-lg z-50 overflow-hidden">
+                    <a href="{{ route('ghassal.export.excel', request()->query()) }}"
+                       class="flex items-center gap-2 px-4 py-2 text-xs text-gray-700 hover:bg-green-50 hover:text-green-700 border-b border-gray-50">
+                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                        Excel (.xlsx)
                     </a>
 
                     <a href="{{ route('ghassal.export.pdf', request()->query()) }}"
-                       class="block px-3 py-2 text-xs text-gray-700 hover:bg-gray-100 border-t border-gray-100">
-                        PDF
+                       class="flex items-center gap-2 px-4 py-2 text-xs text-gray-700 hover:bg-red-50 hover:text-red-700">
+                        <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                        PDF Document
                     </a>
                 </div>
             </div>
 
             {{-- New record --}}
             <a href="{{ route('ghassal.create') }}"
-               class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm shadow-sm">
+               class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm shadow-sm transition-all">
                 <span class="text-lg leading-none">+</span>
                 <span>نیا ریکارڈ شامل کریں</span>
             </a>
@@ -233,4 +238,13 @@
     <div class="mt-4">
         {{ $records->links() }}
     </div>
+    <script>
+        window.addEventListener('click', function(e) {
+            const menu = document.getElementById('download-menu');
+            const btn = menu.previousElementSibling;
+            if (!menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+    </script>
 @endsection
