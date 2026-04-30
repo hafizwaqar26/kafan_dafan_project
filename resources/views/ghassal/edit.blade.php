@@ -154,15 +154,21 @@
     </form>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        $(document).ready(function() {
+            // Initialize Select2
+            $('select').select2({
+                dir: 'rtl',
+                width: '100%'
+            });
+
             const selects = {
-                country: document.getElementById('country'),
-                province: document.getElementById('province'),
-                division: document.getElementById('division'),
-                district: document.getElementById('district'),
-                tehsil: document.getElementById('tehsil'),
-                sub_tehsil: document.getElementById('sub_tehsil'),
-                uc: document.getElementById('uc')
+                country: $('#country'),
+                province: $('#province'),
+                division: $('#division'),
+                district: $('#district'),
+                tehsil: $('#tehsil'),
+                sub_tehsil: $('#sub_tehsil'),
+                uc: $('#uc')
             };
 
             const initialIds = {
@@ -176,9 +182,12 @@
 
             function updateHiddenName(id) {
                 const select = selects[id];
-                const hidden = document.getElementById(id + '_name');
-                if (select.selectedIndex >= 0) {
-                    hidden.value = select.options[select.selectedIndex].text;
+                const hidden = $('#' + id + '_name');
+                const selectedText = select.find('option:selected').text();
+                if (select.val() !== '') {
+                    hidden.val(selectedText);
+                } else {
+                    hidden.val('');
                 }
             }
 
@@ -191,41 +200,44 @@
                         continue;
                     }
                     if (started) {
-                        selects[key].innerHTML = '<option value="">سلیکٹ کریں</option>';
-                        selects[key].disabled = true;
-                        document.getElementById(key + '_name').value = '';
+                        selects[key].empty().append('<option value="">سلیکٹ کریں</option>');
+                        selects[key].prop('disabled', true);
+                        $('#' + key + '_name').val('');
+                        selects[key].trigger('change.select2');
                     }
                 }
             }
 
             async function fetchData(url, targetSelect, placeholder, selectedId = null) {
-                targetSelect.innerHTML = '<option value="">لوڈنگ...</option>';
+                targetSelect.empty().append('<option value="">لوڈنگ...</option>').trigger('change.select2');
                 try {
                     const response = await fetch(url);
                     const data = await response.json();
-                    targetSelect.innerHTML = `<option value="">${placeholder}</option>`;
+                    targetSelect.empty().append(`<option value="">${placeholder}</option>`);
                     if (data.length > 0) {
                         data.forEach(item => {
                             const selected = selectedId == item.id ? 'selected' : '';
-                            targetSelect.innerHTML += `<option value="${item.id}" ${selected}>${item.name}</option>`;
+                            targetSelect.append(`<option value="${item.id}" ${selected}>${item.name}</option>`);
                         });
-                        targetSelect.disabled = false;
+                        targetSelect.prop('disabled', false);
+                        targetSelect.trigger('change.select2');
                         return true;
                     } else {
-                        targetSelect.innerHTML = '<option value="">کوئی ڈیٹا نہیں ملا</option>';
-                        targetSelect.disabled = true;
+                        targetSelect.empty().append('<option value="">کوئی ڈیٹا نہیں ملا</option>');
+                        targetSelect.prop('disabled', true);
+                        targetSelect.trigger('change.select2');
                         return false;
                     }
                 } catch (error) {
                     console.error('Error fetching data:', error);
-                    targetSelect.innerHTML = '<option value="">سرور ایرر</option>';
+                    targetSelect.empty().append('<option value="">سرور ایرر</option>').trigger('change.select2');
                     return false;
                 }
             }
 
             async function init() {
-                if (selects.country.value) {
-                    const hasProvinces = await fetchData(`/get-provinces/${selects.country.value}`, selects.province, 'صوبہ منتخب کریں', initialIds.province);
+                if (selects.country.val()) {
+                    const hasProvinces = await fetchData(`/get-provinces/${selects.country.val()}`, selects.province, 'صوبہ منتخب کریں', initialIds.province);
                     if (hasProvinces && initialIds.province) {
                         const hasDivisions = await fetchData(`/get-divisions/${initialIds.province}`, selects.division, 'ڈویژن منتخب کریں', initialIds.division);
                         if (hasDivisions && initialIds.division) {
@@ -246,55 +258,55 @@
 
             init();
 
-            selects.country.addEventListener('change', function() {
+            selects.country.on('change', function() {
                 updateHiddenName('country');
                 clearDownstream('country');
-                if (this.value) {
-                    fetchData(`/get-provinces/${this.value}`, selects.province, 'صوبہ منتخب کریں');
+                if ($(this).val()) {
+                    fetchData(`/get-provinces/${$(this).val()}`, selects.province, 'صوبہ منتخب کریں');
                 }
             });
 
-            selects.province.addEventListener('change', function() {
+            selects.province.on('change', function() {
                 updateHiddenName('province');
                 clearDownstream('province');
-                if (this.value) {
-                    fetchData(`/get-divisions/${this.value}`, selects.division, 'ڈویژن منتخب کریں');
+                if ($(this).val()) {
+                    fetchData(`/get-divisions/${$(this).val()}`, selects.division, 'ڈویژن منتخب کریں');
                 }
             });
 
-            selects.division.addEventListener('change', function() {
+            selects.division.on('change', function() {
                 updateHiddenName('division');
                 clearDownstream('division');
-                if (this.value) {
-                    fetchData(`/get-districts/${this.value}`, selects.district, 'ڈسٹرکٹ منتخب کریں');
+                if ($(this).val()) {
+                    fetchData(`/get-districts/${$(this).val()}`, selects.district, 'ڈسٹرکٹ منتخب کریں');
                 }
             });
 
-            selects.district.addEventListener('change', function() {
+            selects.district.on('change', function() {
                 updateHiddenName('district');
                 clearDownstream('district');
-                if (this.value) {
-                    fetchData(`/get-tehsils/${this.value}`, selects.tehsil, 'تحصیل منتخب کریں');
+                if ($(this).val()) {
+                    fetchData(`/get-tehsils/${$(this).val()}`, selects.tehsil, 'تحصیل منتخب کریں');
                 }
             });
 
-            selects.tehsil.addEventListener('change', function() {
+            selects.tehsil.on('change', function() {
                 updateHiddenName('tehsil');
                 clearDownstream('tehsil');
-                if (this.value) {
-                    fetchData(`/get-sub-tehsils/${this.value}`, selects.sub_tehsil, 'سب تحصیل منتخب کریں');
+                if ($(this).val()) {
+                    fetchData(`/get-sub-tehsils/${$(this).val()}`, selects.sub_tehsil, 'سب تحصیل منتخب کریں');
                 }
             });
 
-            selects.sub_tehsil.addEventListener('change', function() {
+            selects.sub_tehsil.on('change', function() {
                 updateHiddenName('sub_tehsil');
                 clearDownstream('sub_tehsil');
-                if (this.value) {
-                    fetchData(`/get-ucs/${this.value}`, selects.uc, 'یوسی منتخب کریں');
+                if ($(this).val()) {
+                    fetchData(`/get-ucs/${$(this).val()}`, selects.uc, 'یوسی منتخب کریں');
                 }
             });
 
-            selects.uc.addEventListener('change', function() {
+            selects.uc.on('change', function() {
                 updateHiddenName('uc');
             });
         });
