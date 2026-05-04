@@ -115,6 +115,15 @@ class GhassalRecordController extends Controller
             'time_of_ghusal' => 'required|string|max:20',
         ]);
 
+        // Save location IDs
+        $data['country_id']    = $request->country;
+        $data['province_id']   = $request->province;
+        $data['division_id']   = $request->division;
+        $data['district_id']   = $request->district;
+        $data['tehsil_id']     = $request->tehsil;
+        $data['sub_tehsil_id'] = $request->sub_tehsil;
+        $data['uc_id']         = $request->uc;
+
         // If ID was sent in 'country', but we have 'country_name' hidden field, use that.
         $data['country']    = $request->country_name ?? $request->country;
         $data['province']   = $request->province_name ?? $request->province;
@@ -179,6 +188,13 @@ class GhassalRecordController extends Controller
             ],
             'time_of_ghusal' => 'required|string|max:20',
         ]);
+        $data['country_id']    = $request->country;
+        $data['province_id']   = $request->province;
+        $data['division_id']   = $request->division;
+        $data['district_id']   = $request->district;
+        $data['tehsil_id']     = $request->tehsil;
+        $data['sub_tehsil_id'] = $request->sub_tehsil;
+        $data['uc_id']         = $request->uc;
 
         $data['country']    = $request->country_name ?? $request->country;
         $data['province']   = $request->province_name ?? $request->province;

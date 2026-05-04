@@ -10,6 +10,13 @@ class GhassalRecord extends Model
     use HasFactory;
 
     protected $fillable = [
+        'country_id',
+        'province_id',
+        'division_id',
+        'district_id',
+        'tehsil_id',
+        'sub_tehsil_id',
+        'uc_id',
         'country',
         'province',
         'division',
