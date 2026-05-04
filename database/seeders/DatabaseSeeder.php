@@ -3,25 +3,27 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        $this->call(LocationSeeder::class);
+        // Locations (countries → union councils)
+        $this->call([
+            LocationSeeder::class,
+        ]);
 
+        // Default admin user
         User::updateOrCreate(
             ['email' => 'admin@dawateislami.org'],
             [
-                'name' => 'Admin',
-                'password' => \Hash::make('123456'),
+                'name'     => 'Admin',
+                'password' => Hash::make('123456'),
             ]
         );
     }

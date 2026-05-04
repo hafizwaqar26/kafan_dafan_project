@@ -112,7 +112,7 @@ class GhassalRecordController extends Controller
             'address'        => 'required|string|max:255',
             'name'           => 'required|string|max:255',
             'contact'        => 'required|string|max:255|unique:ghassal_records,contact',
-            'time_of_ghusal' => 'required|string|max:20',
+            'time_of_ghusal' => 'required|string|max:255',
         ]);
 
         // Save location IDs
@@ -186,7 +186,7 @@ class GhassalRecordController extends Controller
                 'max:255',
                 Rule::unique('ghassal_records', 'contact')->ignore($ghassal->id),
             ],
-            'time_of_ghusal' => 'required|string|max:20',
+            'time_of_ghusal' => 'required|string|max:255',
         ]);
         $data['country_id']    = $request->country;
         $data['province_id']   = $request->province;

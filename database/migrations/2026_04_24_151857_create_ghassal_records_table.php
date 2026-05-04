@@ -23,7 +23,7 @@ return new class extends Migration
         $table->string('address')->nullable();
         $table->string('name')->nullable();
         $table->string('contact')->nullable();
-        $table->time('time_of_ghusal');
+        $table->string('time_of_ghusal')->nullable();
         $table->timestamps();
         });
     }
