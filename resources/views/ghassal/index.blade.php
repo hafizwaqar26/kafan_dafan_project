@@ -201,7 +201,7 @@
                                 </svg>
                             </a>
 
-                            {{-- Delete icon --}}
+                            <!-- {{-- Delete icon --}}
                             <form method="POST"
                                   action="{{ route('ghassal.destroy', $record) }}"
                                   onsubmit="return confirm('Delete this record?')">
@@ -219,7 +219,7 @@
                                               clip-rule="evenodd" />
                                     </svg>
                                 </button>
-                            </form>
+                            </form> -->
                         </div>
                     </td>
                 </tr>
