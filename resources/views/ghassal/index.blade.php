@@ -92,7 +92,6 @@
                 <th class="px-3 py-2 font-semibold text-right">غسال کا رابطہ نمبر</th>
                 <th class="px-3 py-2 font-semibold text-right">غسل کا وقت</th>
                 <th class="px-3 py-2 font-semibold text-right">انٹری کا وقت</th>
-                <th class="px-3 py-2 font-semibold text-right">اپڈیٹ کا وقت</th>
                 <th class="px-3 py-2 font-semibold text-center">Actions</th>
             </tr>
 
