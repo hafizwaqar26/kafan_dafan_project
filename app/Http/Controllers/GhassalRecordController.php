@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GhassalRecordsExport;
 use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class GhassalRecordController extends Controller
 {

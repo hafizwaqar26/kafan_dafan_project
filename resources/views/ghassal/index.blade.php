@@ -91,6 +91,8 @@
                 <th class="px-3 py-2 font-semibold text-right">نام غسال</th>
                 <th class="px-3 py-2 font-semibold text-right">غسال کا رابطہ نمبر</th>
                 <th class="px-3 py-2 font-semibold text-right">غسل کا وقت</th>
+                <th class="px-3 py-2 font-semibold text-right">انٹری کا وقت</th>
+                <th class="px-3 py-2 font-semibold text-right">اپڈیٹ کا وقت</th>
                 <th class="px-3 py-2 font-semibold text-center">Actions</th>
             </tr>
 
@@ -155,6 +157,11 @@
                                value="{{ request('time_of_ghusal') }}"
                                class="w-full border rounded px-2 py-1 text-[11px] text-right focus:outline-none focus:ring-1 focus:ring-indigo-400">
                     </th>
+                    
+                    <th class="px-3 py-1">
+                        {{ request('created_at')}}
+                    </th>
+
 
                     <th class="px-3 py-1 text-center">
                         <button type="submit"
@@ -185,6 +192,7 @@
                     <td class="px-3 py-2 whitespace-nowrap text-right">{{ $record->name }}</td>
                     <td class="px-3 py-2 whitespace-nowrap text-right">{{ $record->contact }}</td>
                     <td class="px-3 py-2 whitespace-nowrap text-right">{{ $record->time_of_ghusal }}</td>
+                    <td class="px-3 py-2 whitespace-nowrap text-right">{{ $record->created_at->format('d-M-Y / h:i A') }}</td>
 
                     <td class="px-3 py-2 whitespace-nowrap">
                         <div class="flex items-center justify-center gap-2">

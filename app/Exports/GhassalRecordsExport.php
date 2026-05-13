@@ -36,6 +36,7 @@ class GhassalRecordsExport implements FromCollection, WithHeadings, ShouldAutoSi
                 $record->name,
                 $record->contact,
                 $record->time_of_ghusal,
+                $record->created_at->format('d-M-Y / h:i A'),
             ];
         });
     }
@@ -47,14 +48,15 @@ class GhassalRecordsExport implements FromCollection, WithHeadings, ShouldAutoSi
             'ملک',
             'صوبہ',
             'ڈویژن',
-            'ڈسٹرکٹ',
-            'تحصیل',
-            'سب تحصیل',
-            'یوسی',
+            'ڈسٹرکٹ/میٹروپولیٹن',
+            'تحصیل/ٹاؤن/زون',
+            'سب تحصیل/سب ٹاؤن/ایریا',
+            'یوسی/سیکٹر',
             'مقام',
             'نام غسال',
             'رابطہ نمبر',
             'غسل کا وقت',
+            'ڈیٹا انٹری کا وقت',
         ];
     }
 
